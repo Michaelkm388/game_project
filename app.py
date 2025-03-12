@@ -2,6 +2,24 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
+import os
+
+PLAY_COUNT_FILE = "play_count.txt"
+
+# Function to get the current play count
+def get_play_count():
+    if not os.path.exists(PLAY_COUNT_FILE):
+        return 0
+    with open(PLAY_COUNT_FILE, "r") as file:
+        return int(file.read())
+
+# Function to update the play count
+def update_play_count():
+    count = get_play_count() + 1
+    with open(PLAY_COUNT_FILE, "w") as file:
+        file.write(str(count))
+    return count
+
 # Define the final scoring function ("State of the World")
 def state_of_the_world(score):
     if score >= 40:
@@ -296,10 +314,14 @@ def start_game():
     if player_country not in events:
         return jsonify({"error": "Invalid country selection"}), 400
 
+    # Update play count
+    play_count = update_play_count()
+
     return jsonify({
         "message": f"Game started as {player_country}!",
         "redirect": "/game",
-        "events": events[player_country]
+        "events": events[player_country],
+        "play_count": play_count  # Send count to the frontend
     })
 
 @app.route("/game")
