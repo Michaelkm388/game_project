@@ -342,4 +342,4 @@ def play():
     return jsonify({"next_event": event_index + 1, "result": result})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5500)
+    app.run(host='0.0.0.0', port=8080)
