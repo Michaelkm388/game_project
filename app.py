@@ -306,22 +306,28 @@ def start_game():
     global player_country
     data = request.get_json()
 
+    print("🔹 Received request data:", data)  # ✅ Debugging output
+
     if not data or "country" not in data:
+        print("❌ Error: No country provided")
         return jsonify({"error": "Invalid selection"}), 400
 
     player_country = data["country"]
 
     if player_country not in events:
+        print("❌ Error: Invalid country selection:", player_country)
         return jsonify({"error": "Invalid country selection"}), 400
 
     # Update play count
     play_count = update_play_count()
 
+    print(f"✅ Game started as {player_country}, play count: {play_count}")  # ✅ Debugging output
+
     return jsonify({
         "message": f"Game started as {player_country}!",
         "redirect": "/game",
         "events": events[player_country],
-        "play_count": play_count  # Send count to the frontend
+        "play_count": play_count
     })
 
 @app.route("/game")
