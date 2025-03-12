@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Nation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      padding: 50px;
+    }
+    /* U.S. button: red, white, and blue gradient */
+    .us-button {
+      background: linear-gradient(to right, red, white, blue);
+      color: rgb(11, 0, 0);
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    /* Russia button: solid red */
+    .russia-button {
+      background-color: red;
+      color: rgb(13, 1, 1);
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Russia Dilemma</h1>
+  <h2>Choose Your Nation</h2>
+  
+  <button class="us-button" onclick="selectNation('US')">Play as U.S.</button>
+  <button class="russia-button" onclick="selectNation('Russia')">Play as Russia</button>
+  
+  <h2 id="message"></h2>
+  
+  <script>
+    function selectNation(country) {
+      console.log("Selected Nation:", country);
+      fetch('/start_game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ "country": country })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Response from server:", data);
+        if (data.redirect) {
+          window.location.href = data.redirect;
+        } else {
+          document.getElementById("message").innerText = data.message || "Error selecting nation.";
+        }
+      })
+      .catch(error => console.error("Error:", error));
+    }
+  </script>
+</body>
+</html>
